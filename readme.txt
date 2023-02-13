@@ -1,3 +1,5 @@
+Установка:
+
 Ко всем include
 
 #include <camper>
