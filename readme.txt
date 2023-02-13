@@ -1,41 +1,45 @@
-Установка:
+РљРѕ РІСЃРµРј include
 
-Ко всем include
 #include <camper>
 
-В OnGameModeInit после подключения к БД
-Camper_SetMysqlConnectionHandle(/*переменная для подключения*/); //Например dbHandle
+
+Р’ OnGameModeInit РїРѕСЃР»Рµ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р‘Р”
+
+Camper_SetMysqlConnectionHandle(/*РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ*/); //РќР°РїСЂРёРјРµСЂ dbHandle
 
 
-В самый конец OnPlayerSpawn добавляем:
+
+Р’ СЃР°РјС‹Р№ РєРѕРЅРµС† OnPlayerSpawn РґРѕР±Р°РІР»СЏРµРј:
+
 OnPlayerSpawnCamper(playerid);
 
-В конец мода
 
 
-//Деньги
+Р’ РєРѕРЅРµС† РјРѕРґР°
+
+//Р”РµРЅСЊРіРё
 stock camper_GetPlayerMoney(playerid)
-    return PlayerInfo[playerid][pMoney]; //PlayerInfo[playerid][pMoney] Меняем на свое
+    return PlayerInfo[playerid][pMoney]; //PlayerInfo[playerid][pMoney] РњРµРЅСЏРµРј РЅР° СЃРІРѕРµ
 
 stock camper_SetPlayerMoney(playerid, cmp_money)
 {
-    PlayerInfo[playerid][pMoney] += cmp_money; //PlayerInfo[playerid][pMoney] Меняем на свое
+    PlayerInfo[playerid][pMoney] += cmp_money; //PlayerInfo[playerid][pMoney] РњРµРЅСЏРµРј РЅР° СЃРІРѕРµ
 }
 
-//Маты
+//РњР°С‚С‹
 stock camper_GetPlayerMats(playerid)
-    return PlayerInfo[playerid][pMats]; //PlayerInfo[playerid][pMats] Меняем на свое
+    return PlayerInfo[playerid][pMats]; //PlayerInfo[playerid][pMats] РњРµРЅСЏРµРј РЅР° СЃРІРѕРµ
 
 stock camper_SetPlayerMats(playerid, cmp_mats)
 {
-    layerInfo[playerid][pMats] += cmp_mats; //PlayerInfo[playerid][pMats] Меняем на свое
+    layerInfo[playerid][pMats] += cmp_mats; //PlayerInfo[playerid][pMats] РњРµРЅСЏРµРј РЅР° СЃРІРѕРµ
 }
 
-//Наркотики
+//РќР°СЂРєРѕС‚РёРєРё
 stock camper_GetPlayerDrugs(playerid)
-    return PlayerInfo[playerid][pDrugs]; //PlayerInfo[playerid][pDrugs] Меняем на свое
+    return PlayerInfo[playerid][pDrugs]; //PlayerInfo[playerid][pDrugs] РњРµРЅСЏРµРј РЅР° СЃРІРѕРµ
 
 stock camper_SetPlayerDrugs(playerid, cmp_drugs, bool: cmp_action)
 {
-    PlayerInfo[playerid][pDrugs] += cmp_drugs; //PlayerInfo[playerid][pDrugs] Меняем на свое
+    PlayerInfo[playerid][pDrugs] += cmp_drugs; //PlayerInfo[playerid][pDrugs] РњРµРЅСЏРµРј РЅР° СЃРІРѕРµ
 }
