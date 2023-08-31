@@ -46,7 +46,7 @@ stock camper_GetPlayerDrugs(playerid)
     return PlayerInfo[playerid][pDrugs]; //PlayerInfo[playerid][pDrugs] Меняем на свое
 }
 
-stock camper_SetPlayerDrugs(playerid, cmp_drugs, bool: cmp_action)
+stock camper_SetPlayerDrugs(playerid, cmp_drugs)
 {
     PlayerInfo[playerid][pDrugs] += cmp_drugs; //PlayerInfo[playerid][pDrugs] Меняем на свое
 }
