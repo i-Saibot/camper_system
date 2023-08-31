@@ -29,64 +29,65 @@ stock Camper_SetMysqlConnectionHandle(CAMPER_MYSQL_TAG:handle)
 		cache_get_field_content(%0,%1,%2,dbHandle,%3)
 #endif
 
+
 #define COLOR_CAMPERS						0xBA2821FF
 
 const
-	MODEL_VEHICLE_CAMPER = 508,
-	CAMPER_SPAWN = -1,
+	MODEL_VEHICLE_CAMPER					= 508,
+	CAMPER_SPAWN							= -1,
 
-	Float: BUY_CAMPER_POS_X = 0.0,
-	Float: BUY_CAMPER_POS_Y = 0.0,
-	Float: BUY_CAMPER_POS_Z = 0.0,
-	Float: BUY_CAMPER_POS_A = 0.0,
+	Float: BUY_CAMPER_POS_X					= 0.0,
+	Float: BUY_CAMPER_POS_Y					= 0.0,
+	Float: BUY_CAMPER_POS_Z					= 0.0,
+	Float: BUY_CAMPER_POS_A					= 0.0,
 
-	Float: PLACE_BUY_CAMPER_POS_X = 986.5852,
-	Float: PLACE_BUY_CAMPER_POS_Y = -1300.9677,
-	Float: PLACE_BUY_CAMPER_POS_Z = 13.3828,
+	Float: PLACE_BUY_CAMPER_POS_X			= 986.5852,
+	Float: PLACE_BUY_CAMPER_POS_Y			= -1300.9677,
+	Float: PLACE_BUY_CAMPER_POS_Z			= 13.3828,
 
-	D_CAMPER_CLOSE_DIALOG = 5999,
+	D_CAMPER_CLOSE_DIALOG					= 5999,
 
-	D_BUY_CAMPER_MENU = 6000,
-	D_CAMPER_SELECT_COLOR = 6001,
-	D_CAMPER_SAFE_MENU = 6002,
+	D_BUY_CAMPER_MENU						= 6000,
+	D_CAMPER_SELECT_COLOR					= 6001,
+	D_CAMPER_SAFE_MENU						= 6002,
 
-	D_CAMPER_SAFE_MONEY = 6003,
-	D_CAMPER_SAFE_MATS = 6004,
-	D_CAMPER_SAFE_DRUGS = 6005,
+	D_CAMPER_SAFE_MONEY						= 6003,
+	D_CAMPER_SAFE_MATS						= 6004,
+	D_CAMPER_SAFE_DRUGS						= 6005,
 
-	D_CAMPER_SAFE_TAKE_MONEY = 6006,
-	D_CAMPER_SAFE_GIVE_MONEY = 6007,
+	D_CAMPER_SAFE_TAKE_MONEY				= 6006,
+	D_CAMPER_SAFE_GIVE_MONEY				= 6007,
 
-	D_CAMPER_SAFE_TAKE_MATS = 6008,
-	D_CAMPER_SAFE_GIVE_MATS = 6009,
+	D_CAMPER_SAFE_TAKE_MATS					= 6008,
+	D_CAMPER_SAFE_GIVE_MATS					= 6009,
 
-	D_CAMPER_SAFE_TAKE_DRUGS = 6010,
-	D_CAMPER_SAFE_GIVE_DRUGS = 6011,
+	D_CAMPER_SAFE_TAKE_DRUGS				= 6010,
+	D_CAMPER_SAFE_GIVE_DRUGS				= 6011,
 	
-	D_CAMPER_MENU = 6012,
+	D_CAMPER_MENU							= 6012,
 
-	D_CAMPER_SELL_MENU = 6013,
-	D_CAMPER_SELL_PLAYER_ID = 6014,
-	D_CAMPER_SELL_MONEY = 6015,
-	D_CAMPER_PLAYER_BUY_CAMPER = 6016,
-	D_BUY_CAMPER_IMPROV_MENU = 6017,
-	D_BUY_CAMPER_IMPROV_INT = 6018,
-	D_BUY_CAMPER_IMPROV_COLOR = 6019,
-	D_BUY_CAMPER_IMPROV_WHEELS = 6020,
+	D_CAMPER_SELL_MENU						= 6013,
+	D_CAMPER_SELL_PLAYER_ID					= 6014,
+	D_CAMPER_SELL_MONEY						= 6015,
+	D_CAMPER_PLAYER_BUY_CAMPER				= 6016,
+	D_BUY_CAMPER_IMPROV_MENU				= 6017,
+	D_BUY_CAMPER_IMPROV_INT					= 6018,
+	D_BUY_CAMPER_IMPROV_COLOR				= 6019,
+	D_BUY_CAMPER_IMPROV_WHEELS				= 6020,
 
-
-	MAX_LENGTH_NAME_CAMPER = 40
+	MAX_LENGTH_NAME_CAMPER					= 40
 ;
+
 
 static
-	gPlayerSellMoney[MAX_PLAYERS],
+	gPlayerCamperSellMoney[MAX_PLAYERS],
 	gPlayerSpawnCamper[MAX_PLAYERS],
-	gPlayerSellID[MAX_PLAYERS]  = {INVALID_PLAYER_ID, ...},
-	gVehicleCamperID[MAX_PLAYERS] = {INVALID_VEHICLE_ID, ...},
-	gIntoCamperVehicleID[MAX_PLAYERS] = {INVALID_VEHICLE_ID, ...}
+	gPlayerCamperSellId[MAX_PLAYERS]		= {INVALID_PLAYER_ID, ...},
+	gVehicleCamperID[MAX_PLAYERS]			= {INVALID_VEHICLE_ID, ...},
+	gIntoCamperVehicleID[MAX_PLAYERS]		= {INVALID_VEHICLE_ID, ...}
 ;
 
-enum e_CamperClass
+static enum e_CamperClass
 {
 	camper_name_class[MAX_LENGTH_NAME_CAMPER],
 	camper_int_class,
@@ -104,7 +105,7 @@ static const gCamperClass[][e_CamperClass] =
 	{"Средний вариант", 1, 100000, 2483.1226, -871.6552, 2883.3989, 3.8108}
 };
 
-enum e_CamperInfo
+static enum e_CamperInfo
 {
 	c_id,
 	c_owner[MAX_PLAYER_NAME + 1],
@@ -124,7 +125,7 @@ enum e_CamperInfo
 	Float: c_camper_pos_a,
 	Text3D: c_camper_3d_text
 }
-new CamperInfo[MAX_VEHICLES][e_CamperInfo];
+static CamperInfo[MAX_VEHICLES][e_CamperInfo];
 
 
 public OnGameModeInit()
@@ -140,6 +141,32 @@ public OnGameModeInit()
 	print("Загрузка данных - версия MySQL 40 - 41.");
 #endif
 
+	mysql_tquery(
+		dbHandle,
+		string,
+		"CREATE TABLE IF NOT EXISTS `info_camper` ( \
+			`ID` int(11) NOT NULL AUTO_INCREMENT, \
+			`Owner` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL, \
+			`Class` int(11) NOT NULL DEFAULT '0', \
+			`Lock` int(11) NOT NULL DEFAULT '0', \
+			`Color` int(11) NOT NULL DEFAULT '0', \
+			`Money` int(11) NOT NULL DEFAULT '0', \
+			`Mats` int(11) NOT NULL DEFAULT '0', \
+			`Drugs` int(11) NOT NULL DEFAULT '0', \
+			`Spawn` int(11) NOT NULL DEFAULT '0', \
+			`Wheels` int(11) NOT NULL DEFAULT '0', \
+			`Hydraulics` int(11) NOT NULL DEFAULT '0', \
+			`Nitro` int(11) NOT NULL DEFAULT '0', \
+			`CamperPosX` float NOT NULL DEFAULT '0', \
+			`CamperPosY` float NOT NULL DEFAULT '0', \
+			`CamperPosZ` float NOT NULL DEFAULT '0', \
+			`CamperPosA` float NOT NULL DEFAULT '0', \
+			PRIMARY KEY (ID) \
+		) \
+		ENGINE = INNODB, \
+		CHARACTER SET utf8mb4, \
+		COLLATE utf8mb4_general_ci"
+	);
 	CamperObject();
 #if defined cmp_OnGameModeInit
 		return cmp_OnGameModeInit();
@@ -162,18 +189,18 @@ public OnPlayerConnect(playerid)
 {
 	new
 		camper_name[MAX_PLAYER_NAME + 1],
-		cmp_string[64 + MAX_PLAYER_NAME]
+		string[64 + MAX_PLAYER_NAME]
 	;
 	GetPlayerName(playerid, camper_name, MAX_PLAYER_NAME + 1);
 
-	format(cmp_string, sizeof(cmp_string),
+	format(string, sizeof(string),
 		"SELECT \
 			* \
 		FROM `info_camper` \
 		WHERE `Owner` = '%s'",
 		camper_name
 	);
-	mysql_tquery(dbHandle, cmp_string, "@_OnLoadCamper", "d", playerid);
+	mysql_tquery(dbHandle, string, "@_OnLoadCamper", "d", playerid);
 	
 #if defined cmp_OnPlayerConnect
 		return cmp_OnPlayerConnect(playerid);
@@ -210,19 +237,19 @@ public OnPlayerDisconnect(playerid, reason)
 	}
 	gPlayerSpawnCamper[playerid] = 0;
 
-	if (gPlayerSellID[playerid] != INVALID_PLAYER_ID)
+	if (gPlayerCamperSellId[playerid] != INVALID_PLAYER_ID)
 	{
-		new targetid = gPlayerSellID[playerid];
+		new targetid = gPlayerCamperSellId[playerid];
 
 		SendClientMessage(
 			targetid,
 			COLOR_CAMPERS,
 			!"[Camper]: {ffffff}Игрок которуму Вы предложили купить дом на колесах - покинул серевер."
 		);
-		gPlayerSellID[targetid] = INVALID_PLAYER_ID;
-		gPlayerSellID[playerid] = INVALID_PLAYER_ID;
+		gPlayerCamperSellId[targetid] = INVALID_PLAYER_ID;
+		gPlayerCamperSellId[playerid] = INVALID_PLAYER_ID;
 	}
-	gPlayerSellMoney[playerid] = 0;
+	gPlayerCamperSellMoney[playerid] = 0;
 #if defined cmp_OnPlayerDisconnect
 	return cmp_OnPlayerDisconnect(playerid, reason);
 #else
@@ -303,15 +330,15 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				ShowImproveMenu(playerid);
 				return 1;
 			}
-			new cmp_string[33 + (( 5 + (- 2 + MAX_LENGTH_NAME_CAMPER) + (- 2 + 11) * sizeof(gCamperClass)))];
+			new string[33 + (( 5 + (- 2 + MAX_LENGTH_NAME_CAMPER) + (- 2 + 11) * sizeof(gCamperClass)))];
 
-			cmp_string = "{ffffff}Название\t{ffffff}Цена\n";
+			string = "{ffffff}Название\t{ffffff}Цена\n";
 
 			for(new i; i < sizeof(gCamperClass); i++)
 			{
-				format(cmp_string, sizeof(cmp_string),
+				format(string, sizeof(string),
 					"%s%s\t%d$\n",
-					cmp_string,
+					string,
 					gCamperClass[i][camper_name_class],
 					gCamperClass[i][camper_price_class]
 				);
@@ -321,7 +348,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				D_BUY_CAMPER_MENU,
 				DIALOG_STYLE_TABLIST_HEADERS,
 				!"Продавец",
-				cmp_string,
+				string,
 				!"Далее",
 				!"Выход"
 			);
@@ -350,7 +377,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					SendClientMessage(
 						playerid,
 						COLOR_CAMPERS,
-						!"[Camper]: {ffffff}Дом на колесах - закрыт."
+						!"[Camper]: {ffffff}Дом на колесах - закрыт." 
 					);
 					return 0;
 				}
@@ -433,7 +460,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						CamperMenu(playerid);
 						return 0;
 					}
-					new cmp_string[147 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)];
+					new string[147 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)];
 
 					GameTextForPlayer(
 						playerid,
@@ -443,7 +470,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					);
 					CamperInfo[camperid][c_lock] = !CamperInfo[camperid][c_lock];
 
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"{5d9978}Класс: {ffffff}%s\n\
 						{5d9978}Владелец: {ffffff}%s\n\
 						{5d9978}Дверь: {ffffff}%s\n\n\
@@ -453,9 +480,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						CamperInfo[camperid][c_lock] == 0 ? "Открыта" : "Закрыта"
 					);
 				#if defined _streamer_included
-					UpdateDynamic3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, cmp_string);
+					UpdateDynamic3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, string);
 				#else
-					Update3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, cmp_string);
+					Update3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, string);
 				#endif
 					return CamperMenu(playerid);
 				}
@@ -494,7 +521,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 2:
 				{
 					new
-						cmp_string[173 + (- 8 + 48) + (- 2 + 11)],
+						string[173 + (- 8 + 48) + (- 2 + 11)],
 						Float: camp_x,
 						Float: camp_y,
 						Float: camp_z,
@@ -512,7 +539,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetVehiclePos(camperid, camp_x, camp_y, camp_z);
 					GetVehicleZAngle(camperid, camp_a);
 
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"UPDATE `info_camper` \
 						SET `CamperPosX` = '%f', \
 							`CamperPosY` = '%f', \
@@ -525,7 +552,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						camp_a,
 						CamperInfo[camperid][c_id]
 					);
-					mysql_tquery(dbHandle, cmp_string, "", "");
+					mysql_tquery(dbHandle, string, "", "");
 
 					CamperInfo[camperid][c_camper_pos_x] = camp_x;
 					CamperInfo[camperid][c_camper_pos_y] = camp_y;
@@ -623,7 +650,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						Float: p_y,
 						Float: p_z,
 						Float: p_a,
-						cmp_string[173 + (- 8 + 48) + (- 2 + 11)],
+						string[173 + (- 8 + 48) + (- 2 + 11)],
 						Float: dist = 6.0
 					;
 					GetPlayerPos(playerid, p_x, p_y, p_z);
@@ -636,7 +663,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetVehicleZAngle(camperid, p_a);
 					SetVehicleVirtualWorld(camperid, 0);
 
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"UPDATE `info_camper` \
 						SET `CamperPosX` = '%f', \
 							`CamperPosY` = '%f', \
@@ -649,7 +676,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						p_a,
 						CamperInfo[camperid][c_id]
 					);
-					mysql_tquery(dbHandle, cmp_string, "", "");
+					mysql_tquery(dbHandle, string, "", "");
 
 					CamperInfo[camperid][c_camper_pos_x] = p_x;
 					CamperInfo[camperid][c_camper_pos_y] = p_y;
@@ -717,7 +744,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			new
 				c_player_name[MAX_PLAYER_NAME + 1],
-				cmp_string[167 + (- 4 + 6) + (- 8 + 48) + MAX_PLAYER_NAME],
+				string[167 + (- 4 + 6) + (- 8 + 48) + MAX_PLAYER_NAME],
 				camper_class = GetPVarInt(playerid, !"get_camper_class"),
 				price = gCamperClass[camper_class][camper_price_class]
 			;
@@ -725,7 +752,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			camper_SetPlayerMoney(playerid, - price);
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"INSERT INTO `info_camper` (`Owner`, `Class`, `Color`, `CamperPosX`, `CamperPosY`, `CamperPosZ`, `CamperPosA`) \
 					VALUES ('%s', '%d', '%d', '%f', '%f', '%f', '%f')",
 				c_player_name,
@@ -739,7 +766,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			);
 			mysql_tquery(
 				dbHandle,
-				cmp_string,
+				string,
 				"@_CamperCreate",
 				"ddd",
 				playerid,
@@ -756,13 +783,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			new
 				camperid = gVehicleCamperID[playerid],
-				cmp_string[24 + (- 2 + 11)]
+				string[24 + (- 2 + 11)]
 			;
 			switch (listitem)
 			{
 				case 0:
 				{
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"Денег в сейфе: %d$",
 						CamperInfo[camperid][c_money]
 					);
@@ -770,7 +797,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						playerid,
 						D_CAMPER_SAFE_MONEY,
 						DIALOG_STYLE_LIST,
-						cmp_string,
+						string,
 						!"Взять\n\
 						Положить",
 						!"Выбрать",
@@ -780,7 +807,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 1:
 				{
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"Материалов в сейфе: %d$",
 						CamperInfo[camperid][c_mats]
 					);
@@ -788,7 +815,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						playerid,
 						D_CAMPER_SAFE_MATS,
 						DIALOG_STYLE_LIST,
-						cmp_string,
+						string,
 						!"Взять\n\
 						Положить",
 						!"Выбрать",
@@ -798,7 +825,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 2:
 				{
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"Наркотиков в сейфе: %d$",
 						CamperInfo[camperid][c_drugs]
 					);
@@ -806,7 +833,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						playerid,
 						D_CAMPER_SAFE_DRUGS,
 						DIALOG_STYLE_LIST,
-						cmp_string,
+						string,
 						!"Взять\n\
 						Положить",
 						!"Выбрать",
@@ -828,9 +855,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					new
 						camperid = gVehicleCamperID[playerid],
-						cmp_string[18 + (- 2 + 11)]
+						string[18 + (- 2 + 11)]
 					;
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"Денег в сейфе: %d$",
 						CamperInfo[camperid][c_money]
 					);
@@ -838,7 +865,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						playerid,
 						D_CAMPER_SAFE_TAKE_MONEY,
 						DIALOG_STYLE_INPUT,
-						cmp_string,
+						string,
 						!"{ffffff}Введите сумму для снятия",
 						!"Выбрать",
 						!"Закрыть"
@@ -871,9 +898,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					new
 						camperid = gVehicleCamperID[playerid],
-						cmp_string[23 + (- 2 + 11)]
+						string[23 + (- 2 + 11)]
 					;
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"Материалов в сейфе: %d$",
 						CamperInfo[camperid][c_mats]
 					);
@@ -881,7 +908,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						playerid,
 						D_CAMPER_SAFE_TAKE_MATS,
 						DIALOG_STYLE_INPUT,
-						cmp_string,
+						string,
 						!"{ffffff}Введите количество материалов, чтобы забрать",
 						!"Выбрать",
 						!"Закрыть"
@@ -915,9 +942,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					new
 						camperid = gVehicleCamperID[playerid],
-						cmp_string[23 + (- 2 + 11)]
+						string[23 + (- 2 + 11)]
 					;
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"Наркотиков в сейфе: %d$",
 						CamperInfo[camperid][c_drugs]
 					);
@@ -925,7 +952,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						playerid,
 						D_CAMPER_SAFE_TAKE_DRUGS,
 						DIALOG_STYLE_INPUT,
-						cmp_string,
+						string,
 						!"{ffffff}Введите количество наркотиков, чтобы забрать",
 						!"Выбрать",
 						!"Закрыть"
@@ -974,16 +1001,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			CamperInfo[camperid][c_money] -= money;
 
-			new cmp_string[71 +(- 2 + 1) + (- 2 + 11)];
+			new string[71 +(- 2 + 1) + (- 2 + 11)];
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Money` = '%d' \
 				WHERE `ID` = '%d'",
 				CamperInfo[camperid][c_money],
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			SendClientMessage(
 				playerid,
@@ -1018,16 +1045,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			CamperInfo[camperid][c_money] += money;
 
-			new cmp_string[71 +(- 2 + 1) + (- 2 + 11)];
+			new string[71 +(- 2 + 1) + (- 2 + 11)];
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Money` = '%d' \
 				WHERE `ID` = '%d'",
 				CamperInfo[camperid][c_money],
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			SendClientMessage(
 				playerid,
@@ -1063,16 +1090,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			CamperInfo[camperid][c_mats] -= mats;
 
-			new cmp_string[70 +(- 2 + 1) + (- 2 + 11)];
+			new string[70 +(- 2 + 1) + (- 2 + 11)];
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Mats` = '%d' \
 				WHERE `ID` = '%d'",
 				CamperInfo[camperid][c_mats],
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			SendClientMessage(
 				playerid,
@@ -1108,16 +1135,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			CamperInfo[camperid][c_mats] += mats;
 
-			new cmp_string[70 +(- 2 + 1) + (- 2 + 11)];
+			new string[70 +(- 2 + 1) + (- 2 + 11)];
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Mats` = '%d' \
 				WHERE `ID` = '%d'",
 				CamperInfo[camperid][c_mats],
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			SendClientMessage(
 				playerid,
@@ -1149,20 +1176,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				);
 				return 1;
 			}
-			camper_SetPlayerDrugs(playerid, CamperInfo[camperid][c_drugs], true);
+			camper_SetPlayerDrugs(playerid, CamperInfo[camperid][c_drugs]);
 
 			CamperInfo[camperid][c_drugs] -= drugs;
 
-			new cmp_string[71 +(- 2 + 1) + (- 2 + 11)];
+			new string[71 +(- 2 + 1) + (- 2 + 11)];
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Drugs` = '%d' \
 				WHERE `ID` = '%d'",
 				CamperInfo[camperid][c_drugs],
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			SendClientMessage(
 				playerid,
@@ -1192,22 +1219,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				);
 				return 1;
 			}
-			camper_SetPlayerDrugs(playerid, drugs, false);
+			camper_SetPlayerDrugs(playerid, drugs);
 
 			new camperid = gVehicleCamperID[playerid];
 
 			CamperInfo[camperid][c_drugs] += drugs;
 
-			new cmp_string[71 +(- 2 + 1) + (- 2 + 11)];
+			new string[71 + (- 2 + 1) + (- 2 + 11)];
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Drugs` = '%d' \
 				WHERE `ID` = '%d'",
 				CamperInfo[camperid][c_drugs],
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			SendClientMessage(
 				playerid,
@@ -1228,16 +1255,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0:
 				{
 					new	
-						cmp_string[52 + (- 2 + 11)],
+						string[52 + (- 2 + 11)],
 						camperid = gVehicleCamperID[playerid],
 						classid = CamperInfo[camperid][c_class]
 					;
-					format(cmp_string, sizeof(cmp_string), 
+					format(string, sizeof(string), 
 						"DELETE FROM `info_camper` \
 						WHERE `ID` = '%i'",
 						CamperInfo[camperid][c_id]
 					);
-					mysql_tquery(dbHandle, cmp_string);
+					mysql_tquery(dbHandle, string);
 
 					DestroyVehicle(camperid);
 					ClearVehicleCamper(camperid);
@@ -1272,7 +1299,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 1:
 				{
-					if (gPlayerSellID[playerid] != INVALID_PLAYER_ID)
+					if (gPlayerCamperSellId[playerid] != INVALID_PLAYER_ID)
 					{
 						ShowPlayerDialog(
 							playerid,
@@ -1376,7 +1403,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				);
 				return 1;
 			}
-			if (gPlayerSellID[targetid] != INVALID_PLAYER_ID)
+			if (gPlayerCamperSellId[targetid] != INVALID_PLAYER_ID)
 			{
 				ShowPlayerDialog(
 					playerid,
@@ -1403,8 +1430,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				!"Далее",
 				!"Назад"
 			);
-			gPlayerSellID[playerid] = targetid;
-			gPlayerSellID[targetid] = playerid;
+			gPlayerCamperSellId[playerid] = targetid;
+			gPlayerCamperSellId[targetid] = playerid;
 			return 1;
 		}
 		case D_CAMPER_SELL_MONEY:
@@ -1420,15 +1447,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					!"Далее",
 					!"Назад"
 				);
-				new targetid = gPlayerSellID[playerid];
+				new targetid = gPlayerCamperSellId[playerid];
 
-				gPlayerSellID[playerid] = INVALID_PLAYER_ID;
-				gPlayerSellID[targetid] = INVALID_PLAYER_ID;
+				gPlayerCamperSellId[playerid] = INVALID_PLAYER_ID;
+				gPlayerCamperSellId[targetid] = INVALID_PLAYER_ID;
 				return 0;
 			}
 			new 
 				money = strval(inputtext),
-				targetid = gPlayerSellID[playerid]
+				targetid = gPlayerCamperSellId[playerid]
 			;
 			if (camper_GetPlayerMoney(targetid) < money || camper_GetPlayerMoney(playerid) == 0)
 			{
@@ -1449,21 +1476,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 			new
-				cmp_string[67 + MAX_PLAYER_NAME + (- 2 + 11)],
+				string[67 + MAX_PLAYER_NAME + (- 2 + 11)],
 				camper_name[MAX_PLAYER_NAME + 1]
 			;
 			GetPlayerName(targetid, camper_name, MAX_PLAYER_NAME + 1);
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"[Camper]: {ffffff}Вы предложили %s купить Ваш дом на колесах за %d$",
 				camper_name,
 				money
 			);
-			SendClientMessage(playerid, COLOR_CAMPERS, cmp_string);
+			SendClientMessage(playerid, COLOR_CAMPERS, string);
 
 			GetPlayerName(playerid, camper_name, MAX_PLAYER_NAME + 1);
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"%s предлагает Вам купить дом на колесах за %d$",
 				camper_name,
 				money
@@ -1473,16 +1500,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				D_CAMPER_PLAYER_BUY_CAMPER,
 				DIALOG_STYLE_MSGBOX,
 				!"Покупка",
-				cmp_string,
+				string,
 				!"Купить",
 				!"Отменить"
 			);
-			gPlayerSellMoney[targetid] = money;
+			gPlayerCamperSellMoney[targetid] = money;
 			return 1;
 		}
 		case D_CAMPER_PLAYER_BUY_CAMPER:
 		{
-			new targetid = gPlayerSellID[playerid];
+			new targetid = gPlayerCamperSellId[playerid];
 
 			if (!response)
 			{
@@ -1496,35 +1523,35 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					COLOR_CAMPERS,
 					!"[Camper]: {ffffff}Игрок отказался от покупки."
 				);
-				gPlayerSellID[playerid] = INVALID_PLAYER_ID;
-				gPlayerSellID[targetid] = INVALID_PLAYER_ID;
-				gPlayerSellMoney[playerid] = 0;
+				gPlayerCamperSellId[playerid] = INVALID_PLAYER_ID;
+				gPlayerCamperSellId[targetid] = INVALID_PLAYER_ID;
+				gPlayerCamperSellMoney[playerid] = 0;
 				return 1;
 			}
 			new 
-				cmp_string[135 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)],
+				string[135 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)],
 				camper_name[MAX_PLAYER_NAME + 1],
 				camperid = gVehicleCamperID[targetid],
-				money = gPlayerSellMoney[playerid],
+				money = gPlayerCamperSellMoney[playerid],
 				indx_class = CamperInfo[camperid][c_class]
 			;
 			GetPlayerName(playerid, camper_name, MAX_PLAYER_NAME + 1);
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` SET `Owner` = '%s' WHERE `ID` = '%d' LIMIT 1",
 				camper_name,
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			gVehicleCamperID[playerid] = camperid;
 			gVehicleCamperID[targetid] = INVALID_VEHICLE_ID;
 
-			gPlayerSellMoney[playerid] = 0;
+			gPlayerCamperSellMoney[playerid] = 0;
 			gPlayerSpawnCamper[targetid] = 0;
 
-			gPlayerSellID[playerid] = INVALID_PLAYER_ID;
-			gPlayerSellID[targetid] = INVALID_PLAYER_ID;
+			gPlayerCamperSellId[playerid] = INVALID_PLAYER_ID;
+			gPlayerCamperSellId[targetid] = INVALID_PLAYER_ID;
 
 			SendClientMessage(
 				playerid,
@@ -1546,7 +1573,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(CamperInfo[camperid][c_owner], MAX_PLAYER_NAME + 1, camper_name);
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"{5d9978}Класс: {ffffff}%s\n\
 				{5d9978}Владелец: {ffffff}%s\n\
 				{5d9978}Дверь: {ffffff}%s\n\n\
@@ -1556,9 +1583,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				CamperInfo[camperid][c_lock] == 0 ? "Открыта" : "Закрыта"
 			);
 		#if defined _streamer_included
-			UpdateDynamic3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, cmp_string);
+			UpdateDynamic3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, string);
 		#else
-			Update3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, cmp_string);
+			Update3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, string);
 		#endif
 			return 1;
 		}
@@ -1571,15 +1598,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0:
 				{
-					new cmp_string[33 + (( 5 + (- 2 + MAX_LENGTH_NAME_CAMPER) + (- 2 + 11) * sizeof(gCamperClass)))];
+					new string[33 + (( 5 + (- 2 + MAX_LENGTH_NAME_CAMPER) + (- 2 + 11) * sizeof(gCamperClass)))];
 
-					cmp_string = "{ffffff}Название\t{ffffff}Цена\n";
+					string = "{ffffff}Название\t{ffffff}Цена\n";
 
 					for(new i; i < sizeof(gCamperClass); i++)
 					{
-						format(cmp_string, sizeof(cmp_string),
+						format(string, sizeof(string),
 							"%s%s\t%d$\n",
-							cmp_string,
+							string,
 							gCamperClass[i][camper_name_class],
 							gCamperClass[i][camper_price_class]
 						);
@@ -1589,7 +1616,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						D_BUY_CAMPER_IMPROV_INT,
 						DIALOG_STYLE_TABLIST_HEADERS,
 						!"Продавец",
-						cmp_string,
+						string,
 						!"Купить",
 						!"Назад"
 					);
@@ -1641,15 +1668,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					new 
 						camperid = gVehicleCamperID[playerid],
-						cmp_string[79 + (- 2 + 2) + (- 2 + 11)]
+						string[79 + (- 2 + 2) + (- 2 + 11)]
 					;
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"UPDATE `info_camper` \
 						SET `Hydraulics` = '1' \
 						WHERE `ID` = '%d'",
 						CamperInfo[camperid][c_id]
 					);
-					mysql_tquery(dbHandle, cmp_string, "", "");
+					mysql_tquery(dbHandle, string, "", "");
 
 					CamperInfo[camperid][c_hydraulics] = 1;
 
@@ -1675,15 +1702,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					new
 						camperid = gVehicleCamperID[playerid],
-						cmp_string[74 + (- 2 + 11)]
+						string[74 + (- 2 + 11)]
 					;
-					format(cmp_string, sizeof(cmp_string),
+					format(string, sizeof(string),
 						"UPDATE `info_camper` \
 						SET `Nitro` = '1' \
 						WHERE `ID` = '%d'",
 						CamperInfo[camperid][c_id]
 					);
-					mysql_tquery(dbHandle, cmp_string, "", "");
+					mysql_tquery(dbHandle, string, "", "");
 
 					CamperInfo[camperid][c_nitro] = 1;
 
@@ -1711,7 +1738,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new
 				camperid = gVehicleCamperID[playerid],
 				camper_class = listitem,
-				cmp_string[135 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)],
+				string[135 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)],
 				price = gCamperClass[camper_class][camper_price_class]
 			;
 			if (camper_GetPlayerMoney(playerid) < price || camper_GetPlayerMoney(playerid) == 0)
@@ -1725,14 +1752,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				);
 				return 0;
 			}
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Class` = '%d' \
 				WHERE `ID` = '%d'",
 				camper_class,
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			CamperInfo[camperid][c_class] = camper_class;
 
@@ -1745,7 +1772,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			);
 			ShowImproveMenu(playerid);
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"{5d9978}Класс: {ffffff}%s\n\
 				{5d9978}Владелец: {ffffff}%s\n\
 				{5d9978}Дверь: {ffffff}%s\n\n\
@@ -1755,9 +1782,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				CamperInfo[camperid][c_lock] == 0 ? "Открыта" : "Закрыта"
 			);
 		#if defined _streamer_included
-			UpdateDynamic3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, cmp_string);
+			UpdateDynamic3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, string);
 		#else
-			Update3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, cmp_string);
+			Update3DTextLabelText(CamperInfo[camperid][c_camper_3d_text], COLOR_CAMPERS, string);
 		#endif
 			return 1;
 		}
@@ -1769,7 +1796,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new 
 				camperid = gVehicleCamperID[playerid],
 				camper_color = strval(inputtext),
-				cmp_string[71 + (- 2 + 2) + (- 2 + 11)]
+				string[71 + (- 2 + 2) + (- 2 + 11)]
 			;
 			if (!(0 <= camper_color <= 255))
 			{
@@ -1794,14 +1821,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				);
 				return 0;
 			}
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Color` = '%d' \
 				WHERE `ID` = '%d'",
 				camper_color,
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			camper_SetPlayerMoney(playerid, - 5000);
 
@@ -1847,18 +1874,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new
 				camperid = gVehicleCamperID[playerid],
 				wheelsid = 1073 + listitem,
-				cmp_string[72 + (- 2 + 2) + (- 2 + 11)]
+				string[72 + (- 2 + 2) + (- 2 + 11)]
 			;
 			camper_SetPlayerMoney(playerid, - 10000);
 
-			format(cmp_string, sizeof(cmp_string),
+			format(string, sizeof(string),
 				"UPDATE `info_camper` \
 				SET `Wheels` = '%d' \
 				WHERE `ID` = '%d'",
 				wheelsid,
 				CamperInfo[camperid][c_id]
 			);
-			mysql_tquery(dbHandle, cmp_string, "", "");
+			mysql_tquery(dbHandle, string, "", "");
 
 			CamperInfo[camperid][c_wheels] = wheelsid;
 
@@ -1977,7 +2004,7 @@ cmd:cmenu(playerid)
 @_CamperCreate(playerid, camper_class, camper_color)
 {
 	new
-		cmp_string[135 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)],
+		string[135 + (- 2 + 11) + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER)],
 		camper_key = cache_insert_id()
 	;
 	new vehicleid = AddStaticVehicleEx(MODEL_VEHICLE_CAMPER,
@@ -2004,7 +2031,7 @@ cmd:cmenu(playerid)
 	CamperInfo[vehicleid][c_color] = camper_color;
 	CamperInfo[vehicleid][c_class] = camper_class;
 
-	format(cmp_string, sizeof(cmp_string),
+	format(string, sizeof(string),
 		"{5d9978}Класс: {ffffff}%s\n\
 		{5d9978}Владелец: {ffffff}%s\n\
 		{5d9978}Дверь: {ffffff}%s\n\n\
@@ -2015,7 +2042,7 @@ cmd:cmenu(playerid)
 	);
 #if defined _streamer_included
 	CamperInfo[vehicleid][c_camper_3d_text] = CreateDynamic3DTextLabel(
-		cmp_string,
+		string,
 		COLOR_CAMPERS,
 		CamperInfo[vehicleid][c_camper_pos_x],
 		CamperInfo[vehicleid][c_camper_pos_y],
@@ -2027,7 +2054,7 @@ cmd:cmenu(playerid)
 	);
 #else
 	CamperInfo[vehicleid][c_camper_3d_text] = Create3DTextLabel(
-		cmp_string,
+		string,
 		COLOR_CAMPERS,
 		CamperInfo[vehicleid][c_camper_pos_x],
 		CamperInfo[vehicleid][c_camper_pos_y],
@@ -2058,7 +2085,7 @@ cmd:cmenu(playerid)
 		return 0;
 	}
 	new
-		cmp_string[138 + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER) + 7],
+		string[138 + MAX_PLAYER_NAME + (- 2 + MAX_LENGTH_NAME_CAMPER) + 7],
 		camper_color,
 		Float: camper_pos_x,
 		Float: camper_pos_y,
@@ -2096,7 +2123,7 @@ cmd:cmenu(playerid)
 	cache_get_value_name_int(0, "Spawn", gPlayerSpawnCamper[playerid]);
 	#pragma tabsize 0
 	
-	format(cmp_string, sizeof(cmp_string),
+	format(string, sizeof(string),
 		"{5d9978}Класс: {ffffff}%s\n\
 		{5d9978}Владелец: {ffffff}%s\n\
 		{5d9978}Дверь: {ffffff}%s\n\n\
@@ -2107,7 +2134,7 @@ cmd:cmenu(playerid)
 	);
 	#if defined _streamer_included
 	CamperInfo[vehicleid][c_camper_3d_text] = CreateDynamic3DTextLabel(
-		cmp_string,
+		string,
 		COLOR_CAMPERS,
 		camper_pos_x,
 		camper_pos_y,
@@ -2119,7 +2146,7 @@ cmd:cmenu(playerid)
 	);
 	#else
 	CamperInfo[vehicleid][c_camper_3d_text] = Create3DTextLabel(
-		cmp_string,
+		string,
 		COLOR_CAMPERS,
 		camper_pos_x,
 		camper_pos_y,
@@ -2185,11 +2212,11 @@ static CamperMenu(playerid)
 {
 	new
 		camperid = gVehicleCamperID[playerid],
-		cmp_string[237 + 15 + (- 2 + 15)]
+		string[237 + 15 + (- 2 + 15)]
 	;
 	if (GetSpawnCamper(playerid) == 0)
 	{
-		format(cmp_string, sizeof(cmp_string),
+		format(string, sizeof(string),
 			"{BA2821}»{ffffff} %s\n\
 			{BA2821}»{ffffff} Место расположения\n\
 			{BA2821}»{ffffff} Припарковать\n\
@@ -2202,7 +2229,7 @@ static CamperMenu(playerid)
 	}
 	else
 	{
-		format(cmp_string, sizeof(cmp_string),
+		format(string, sizeof(string),
 			"{BA2821}»{ffffff} %s\n\
 			{BA2821}»{ffffff} Место расположения\n\
 			{BA2821}»{ffffff} Припарковать\n\
@@ -2212,7 +2239,7 @@ static CamperMenu(playerid)
 			CamperInfo[camperid][c_lock] == 1 ? "{076933}Открыть" : "{FF6347}Закрыть"
 		);
 	}
-	ShowPlayerDialog(playerid, D_CAMPER_MENU, DIALOG_STYLE_LIST, "Меню ДНК", cmp_string, !"Выбрать", !"Выход");
+	ShowPlayerDialog(playerid, D_CAMPER_MENU, DIALOG_STYLE_LIST, "Меню ДНК", string, !"Выбрать", !"Выход");
 	return 1;
 
 }
