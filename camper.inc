@@ -143,7 +143,6 @@ public OnGameModeInit()
 
 	mysql_tquery(
 		dbHandle,
-		string,
 		"CREATE TABLE IF NOT EXISTS `info_camper` ( \
 			`ID` int(11) NOT NULL AUTO_INCREMENT, \
 			`Owner` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL, \
