@@ -177,32 +177,6 @@ public OnGameModeInit()
 	printf("");
 	print("Загрузка данных - версия MySQL 40 - 41.");
 #endif
-
-	mysql_tquery(
-		dbHandle,
-		"CREATE TABLE IF NOT EXISTS `info_camper` ( \
-			`ID` int(11) NOT NULL AUTO_INCREMENT, \
-			`Owner` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL, \
-			`Class` int(11) NOT NULL DEFAULT '0', \
-			`Lock` int(11) NOT NULL DEFAULT '0', \
-			`Color` int(11) NOT NULL DEFAULT '0', \
-			`Money` int(11) NOT NULL DEFAULT '0', \
-			`Mats` int(11) NOT NULL DEFAULT '0', \
-			`Drugs` int(11) NOT NULL DEFAULT '0', \
-			`Spawn` int(11) NOT NULL DEFAULT '0', \
-			`Wheels` int(11) NOT NULL DEFAULT '0', \
-			`Hydraulics` int(11) NOT NULL DEFAULT '0', \
-			`Nitro` int(11) NOT NULL DEFAULT '0', \
-			`CamperPosX` float NOT NULL DEFAULT '0', \
-			`CamperPosY` float NOT NULL DEFAULT '0', \
-			`CamperPosZ` float NOT NULL DEFAULT '0', \
-			`CamperPosA` float NOT NULL DEFAULT '0', \
-			PRIMARY KEY (ID) \
-		) \
-		ENGINE = INNODB, \
-		CHARACTER SET utf8mb4, \
-		COLLATE utf8mb4_general_ci"
-	);
 	CamperObject();
 #if defined cmp_OnGameModeInit
 		return cmp_OnGameModeInit();
@@ -2357,9 +2331,35 @@ static ShowImproveMenu(playerid)
 }
 
 
-stock Camper_SetMysqlConnectionHandle(CAMPER_MYSQL_TAG:handle)
+stock camper_InitMysqlHandle(CAMPER_MYSQL_TAG:handle)
 {
 	dbHandle = handle;
+
+	mysql_tquery(
+		dbHandle,
+		"CREATE TABLE IF NOT EXISTS `info_camper` ( \
+			`ID` int(11) NOT NULL AUTO_INCREMENT, \
+			`Owner` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL, \
+			`Class` int(11) NOT NULL DEFAULT '0', \
+			`Lock` int(11) NOT NULL DEFAULT '0', \
+			`Color` int(11) NOT NULL DEFAULT '0', \
+			`Money` int(11) NOT NULL DEFAULT '0', \
+			`Mats` int(11) NOT NULL DEFAULT '0', \
+			`Drugs` int(11) NOT NULL DEFAULT '0', \
+			`Spawn` int(11) NOT NULL DEFAULT '0', \
+			`Wheels` int(11) NOT NULL DEFAULT '0', \
+			`Hydraulics` int(11) NOT NULL DEFAULT '0', \
+			`Nitro` int(11) NOT NULL DEFAULT '0', \
+			`CamperPosX` float NOT NULL DEFAULT '0', \
+			`CamperPosY` float NOT NULL DEFAULT '0', \
+			`CamperPosZ` float NOT NULL DEFAULT '0', \
+			`CamperPosA` float NOT NULL DEFAULT '0', \
+			PRIMARY KEY (ID) \
+		) \
+		ENGINE = INNODB, \
+		CHARACTER SET utf8mb4, \
+		COLLATE utf8mb4_general_ci"
+	);
 }
 
 #if defined _streamer_included
