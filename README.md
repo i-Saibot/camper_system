@@ -7,7 +7,7 @@
 
 - В ```OnGameModeInit``` после подключения к БД
 ```pawn
-Camper_SetMysqlConnectionHandle(/*переменная для подключения*/); //Например dbHandle
+camper_InitMysqlHandle(/*переменная для подключения*/); //Например dbHandle
 ```
 
 
